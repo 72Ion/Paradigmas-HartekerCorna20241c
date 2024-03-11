@@ -1,0 +1,1 @@
+# Paradigmas-HartekerCorna20241c
