@@ -10,7 +10,7 @@ class AnilloBasico extends Anillo {
     }
 
     public Object current(){
-        return this.value; // original line was: return current.cargo !
+        return this.value;
     }
 
     public Anillo add(Object cargo){
