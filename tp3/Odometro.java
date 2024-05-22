@@ -8,7 +8,9 @@ public abstract class Odometro {
     public abstract Odometro increaseSpeed();
     public abstract Odometro decreaseSpeed();
 
-    public abstract void checkSpeed(Sonda probe);
+    public abstract void checkSpeed(Dron dron);
+
+    public abstract void check4Deploy(Dron dron);
 
 }
 
@@ -24,12 +26,18 @@ class VelCero extends Odometro {
         nuevoOdometro.anterior = this;
         return nuevoOdometro;
     }
-    public Odometro decreaseSpeed() {
-        return this;
+
+    public void checkSpeed(Dron dron) {
+        throw new RuntimeException("Can't decrease speed with speed 0");
     }
 
-    public void checkSpeed(Sonda probe) {
-        probe.checkSpeed(probe);
+    public void check4Deploy(Dron dron) {
+        throw new RuntimeException("Can't decrease speed with speed 0");
+    }
+
+
+    public Odometro decreaseSpeed() {
+        return this;
     }
 
 }
@@ -41,19 +49,25 @@ class VelMayor extends Odometro {
         return speed;
     }
 
-public Odometro increaseSpeed() {
+    public Odometro increaseSpeed() {
         Odometro nuevoOdometro = new VelMayor();
         nuevoOdometro.anterior = this;
         nuevoOdometro.speed= this.speed+1;
         return nuevoOdometro;
     }
 
+    public void checkSpeed(Dron dron) {
+        dron.decreaseSpeed();
+    }
+
     public Odometro decreaseSpeed() {
         return anterior;
     }
 
-    public void checkSpeed(Sonda probe) {
-        return;
+    public void check4Deploy(Dron dron) {
+        dron.deployProbe();
     }
+
+
 
 }

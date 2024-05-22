@@ -2,10 +2,10 @@ package dron;
 
 public abstract class Sonda {
 
-    public abstract void turnRight(Dron dron);
-    public abstract void turnLeft(Dron dron);
+    public abstract void checkTurnLeft(Dron dron);
+    public abstract void checkTurnRight(Dron dron);
 
-    public abstract void checkSpeed(Sonda sonda);
+    public abstract void checkSpeed(Dron dron);
 
     public abstract Sonda deployed();
     public abstract Sonda retracted();
@@ -15,12 +15,12 @@ public abstract class Sonda {
 
 class Retracted extends Sonda {
 
-    public void turnRight(Dron dron) {
-        dron.turnRight();
+    public void checkTurnLeft(Dron dron) {
+        dron.turnLeft();
     }
 
-    public void turnLeft(Dron dron) {
-        dron.turnLeft();
+    public void checkTurnRight(Dron dron) {
+        dron.turnRight();
     }
 
     public Sonda deployed() {
@@ -33,19 +33,23 @@ class Retracted extends Sonda {
         return "Retracted";
     }
 
-    public void checkSpeed(Sonda sonda) {};
+    public void checkSpeed(Dron dron) {
+        dron.decreaseSpeed();
+    }
 
 
 }
 
 class Deployed extends Sonda {
 
-    public void turnRight(Dron dron) {
-        throw new RuntimeException("Can't change direction with deployed probe");
+    public void checkTurnLeft(Dron dron) {
+        throw new RuntimeException("Can't turn with deployed probe");
     }
-    public void turnLeft(Dron dron) {
-        throw new RuntimeException("Can't change direction with deployed probe");
+
+    public void checkTurnRight(Dron dron) {
+        throw new RuntimeException("Can't turn with deployed probe");
     }
+
 
     public Sonda deployed() {
         return this;
@@ -58,7 +62,7 @@ class Deployed extends Sonda {
     }
 
 
-    public void checkSpeed(Sonda sonda) {
-        throw new RuntimeException("Can't be stopped with deployed probe");
+    public void checkSpeed(Dron dron) {
+        dron.decreaseSpeedDeploy();
     }
 }

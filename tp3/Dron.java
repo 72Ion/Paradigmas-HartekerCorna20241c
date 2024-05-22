@@ -1,7 +1,5 @@
 package dron;
 
-import java.util.Objects;
-
 public class Dron {
 
 
@@ -22,18 +20,36 @@ public class Dron {
 
 
     public Dron turnRight() {
-
-        heading = heading.turnRight();
+        this.heading = heading.turnRight();
         return this;
     }
+
     public Dron turnLeft() {
-        heading = heading.turnLeft();
+        this.heading = heading.turnLeft();
         return this;
     }
 
-    public Dron decreaseSpeed() {
+    public void checkTurnLeft(Dron dron) {
+        probe.checkTurnLeft(dron);
+    }
+
+    public void checkTurnRight(Dron dron) {
+        probe.checkTurnRight(dron);
+    }
+
+
+
+    public void decreaseSpeed() {
         speed = speed.decreaseSpeed();
-        speed.checkSpeed(probe);
+    }
+
+
+    public void decreaseSpeedDeploy() {
+        speed.checkSpeed(this);
+    }
+
+    public Dron decreaseSpeedCheck() {
+        probe.checkSpeed(this);
         return this;
     }
 
@@ -42,6 +58,18 @@ public class Dron {
         return this;
     }
 
+    public void deployProbe() {
+        probe = probe.deployed();
+    }
+
+    public void retractProbe() {
+        probe = probe.retracted();
+    }
+
+
+    public void checkDeployement() {
+        speed.checkSpeed(this);
+    }
 
 
 }
