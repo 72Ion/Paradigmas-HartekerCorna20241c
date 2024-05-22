@@ -1,8 +1,12 @@
 package dron;
 
+import java.util.Objects;
+
 public class Dron {
-
-
+    public static String InvalidCommand = "Invalid command";
+    public static String RetractedProbe = "Retracted";
+    public static String DeployedProbe = "Deployed";
+    public static String CantChangeDirection = "Can't change direction with deployed probe";
     private Odometro speed = new VelCero();
     private Brujula heading = new Norte(); // Cambiar para que vaya desde Sonda no brujula
     private Sonda probe = new Retracted();
@@ -10,7 +14,8 @@ public class Dron {
     public int speed() {
         return speed.getSpeed();
     }
-    public String heading() {
+
+    public char heading() {
         return this.heading.heading();
     }
 
@@ -18,38 +23,30 @@ public class Dron {
         return probe.getState();
     }
 
+    public Dron deployProbe() {
+        probe = probe.deployed();
+        return this;
+    }
+
+    public Dron retractProbe() {
+        probe = probe.retracted();
+        return this;
+    }
 
     public Dron turnRight() {
-        this.heading = heading.turnRight();
+
+        heading = heading.turnRight();
         return this;
     }
 
     public Dron turnLeft() {
-        this.heading = heading.turnLeft();
+        heading = heading.turnLeft();
         return this;
     }
 
-    public void checkTurnLeft(Dron dron) {
-        probe.checkTurnLeft(dron);
-    }
-
-    public void checkTurnRight(Dron dron) {
-        probe.checkTurnRight(dron);
-    }
-
-
-
-    public void decreaseSpeed() {
+    public Dron decreaseSpeed() {
         speed = speed.decreaseSpeed();
-    }
-
-
-    public void decreaseSpeedDeploy() {
-        speed.checkSpeed(this);
-    }
-
-    public Dron decreaseSpeedCheck() {
-        probe.checkSpeed(this);
+        speed.checkSpeed(probe);
         return this;
     }
 
@@ -58,19 +55,9 @@ public class Dron {
         return this;
     }
 
-    public void deployProbe() {
-        probe = probe.deployed();
+    public Dron process(char command) {
+        Commands.findCommand(command).execute(this);
+        return this;
     }
-
-    public void retractProbe() {
-        probe = probe.retracted();
-    }
-
-
-    public void checkDeployement() {
-        speed.checkSpeed(this);
-    }
-
-
 }
 
