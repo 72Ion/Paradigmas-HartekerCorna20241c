@@ -3,68 +3,46 @@ package dron;
 import java.util.Objects;
 
 public class Dron {
-    private int speed = 0;
-    private char heading = 'N';
-    private String probe = "recovered";
+
+
+    private Odometro speed = new VelCero();
+    private Brujula heading = new Norte(); // Cambiar para que vaya desde Sonda no brujula
+    private Sonda probe = new Retracted();
 
     public int speed() {
-        return speed;
+        return speed.getSpeed();
     }
-
-    public int heading() {
-        return heading;
+    public String heading() {
+        return this.heading.heading();
     }
 
     public String probe() {
-        return probe;
+        return probe.getState();
     }
 
-    public Dron process(char input) {
 
-        if (input == 'd' && speed!=0) {
-            probe = "deployed";
-        }
-        if (input == 'f') {
-            probe = "recovered";
-        }
+    public Dron turnRight() {
 
-        if (Objects.equals(probe, "deployed") && (input == 'i'||input == 's'||input == 'r'||input == 'l')) {
-            throw new RuntimeException("Probe Destroyed");
-        }
-        if (Objects.equals(probe, "recovered")) {
-            if (input == 'i') {
-                speed++;
-            }
-            if (input == 's') {
-                if (speed == 0) {
-                    throw new RuntimeException("Too Slow");
-                }
-                speed--;
-            }
-            if (input == 'r') {
-                if (heading == 'N') {
-                    heading = 'E';
-                } else if (heading == 'E') {
-                    heading = 'S';
-                } else if (heading == 'S') {
-                    heading = 'W';
-                } else if (heading == 'W') {
-                    heading = 'N';
-                }
-            }
-
-            if (input == 'l') {
-                if (heading == 'N') {
-                    heading = 'W';
-                } else if (heading == 'W') {
-                    heading = 'S';
-                } else if (heading == 'S') {
-                    heading = 'E';
-                } else if (heading == 'E') {
-                    heading = 'N';
-                }
-            }
-        }
+        heading = heading.turnRight();
         return this;
     }
+    public Dron turnLeft() {
+        heading = heading.turnLeft();
+        return this;
+    }
+
+    public Dron decreaseSpeed() {
+        speed = speed.decreaseSpeed();
+        speed.checkSpeed(probe);
+        return this;
+    }
+
+    public Dron higherSpeed() {
+        speed = speed.increaseSpeed();
+        return this;
+    }
+
+
+
 }
+
