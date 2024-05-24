@@ -1,21 +1,19 @@
 package dron;
 
-import java.util.Objects;
-
 public class Dron {
+
     public static String InvalidCommand = "Invalid command";
-    public static String RetractedProbe = "Retracted";
-    public static String DeployedProbe = "Deployed";
-    public static String CantChangeDirection = "Can't change direction with deployed probe";
-    private Odometro speed = new VelCero();
+    private Odometro odometro = new VelCero();
     private Brujula heading = new Norte(); // Cambiar para que vaya desde Sonda no brujula
     private Sonda probe = new Retracted();
 
+
     public int speed() {
-        return speed.getSpeed();
+        return odometro.getSpeed();
     }
 
-    public char heading() {
+
+    public String heading() {
         return this.heading.heading();
     }
 
@@ -23,41 +21,76 @@ public class Dron {
         return probe.getState();
     }
 
-    public Dron deployProbe() {
-        probe = probe.deployed();
-        return this;
-    }
-
-    public Dron retractProbe() {
-        probe = probe.retracted();
-        return this;
-    }
 
     public Dron turnRight() {
-
-        heading = heading.turnRight();
+        this.heading = heading.turnRight();
         return this;
     }
 
     public Dron turnLeft() {
-        heading = heading.turnLeft();
+        this.heading = heading.turnLeft();
         return this;
     }
 
+    public void checkTurnLeft() {
+        probe.checkTurnLeft(this);
+    }
+
+    public void checkTurnRight() {
+        probe.checkTurnRight(this);
+    }
+
+
+
     public Dron decreaseSpeed() {
-        speed = speed.decreaseSpeed();
-        speed.checkSpeed(probe);
+        odometro = odometro.decreaseSpeed();
+
+        return this;
+    }
+
+
+    public void decreaseSpeedDeploy() {
+        odometro.checkSpeed(this);
+    }
+
+    public Dron decreaseSpeedCheck() {
+        probe.checkSpeed(this);
         return this;
     }
 
     public Dron higherSpeed() {
-        speed = speed.increaseSpeed();
+        odometro = odometro.increaseSpeed();
         return this;
     }
+
+    public void deployProbe() {
+        probe = probe.deployed();
+    }
+
+    public void retractProbe() {
+        probe = probe.retracted();
+    }
+
+
+    public void checkDeployement() {
+        odometro.check4Deploy(this);
+    }
+
 
     public Dron process(char command) {
         Commands.findCommand(command).execute(this);
         return this;
     }
+
+
 }
 
+// Clase de julio --> 24-05-2024
+
+/*
+* Axiom Heading Speed Sonda
+* Oficial Speed, Oficial Sonda
+* Oficial Speed/ Level Speed
+* Speed/ movil e inmovil.
+*
+* */

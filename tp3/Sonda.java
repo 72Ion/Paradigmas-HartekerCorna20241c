@@ -35,6 +35,7 @@ class Retracted extends Sonda {
 
     public void checkSpeed(Dron dron) {
         dron.decreaseSpeed();
+
     }
 
 
@@ -63,6 +64,7 @@ class Deployed extends Sonda {
 
 
     public void checkSpeed(Dron dron) {
+        dron.decreaseSpeed();
         dron.decreaseSpeedDeploy();
     }
 }

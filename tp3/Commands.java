@@ -5,7 +5,7 @@ import java.util.List;
 public abstract class Commands {
 
     static public Commands findCommand(char command) {
-        return List.of(new TurnLeft(), new TurnRight(), new IncreaseSpeed(), new DecreaseSpeed(), new DeployProbe(), new RetractProbe()).stream().filter((any) -> any.canHandle(command)).findAny().orElseThrow(() -> new RuntimeException(Dron.InvalidCommand));
+        return List.of(new checkTurnLeft(), new checkTurnRight(), new higherSpeed(), new decreaseSpeedCheck(), new checkDeployement(), new retractProbe()).stream().filter((any) -> any.canHandle(command)).findAny().orElseThrow(() -> new RuntimeException(Dron.InvalidCommand));
     }
 
     public abstract char key();
@@ -17,27 +17,27 @@ public abstract class Commands {
     }
 }
 
-class TurnLeft extends Commands {
+class checkTurnLeft extends Commands {
 
     public char key(){
         return 'l';
     }
     public void execute(Dron dron) {
-        dron.turnLeft();
+        dron.checkTurnLeft();
     }
 }
 
-class TurnRight extends Commands {
+class checkTurnRight extends Commands {
 
     public char key(){
         return 'r';
     }
     public void execute(Dron dron) {
-        dron.turnRight();
+        dron.checkTurnRight();
     }
 }
 
-class IncreaseSpeed extends Commands {
+class higherSpeed extends Commands {
 
     public char key(){
         return 'i';
@@ -47,27 +47,27 @@ class IncreaseSpeed extends Commands {
     }
 }
 
-class DecreaseSpeed extends Commands {
+class decreaseSpeedCheck extends Commands {
 
     public char key(){
         return 's';
     }
     public void execute(Dron dron) {
-        dron.decreaseSpeed();
+        dron.decreaseSpeedCheck();
     }
 }
 
-class DeployProbe extends Commands {
+class checkDeployement extends Commands {
 
     public char key(){
         return 'd';
     }
     public void execute(Dron dron) {
-        dron.deployProbe();
+        dron.checkDeployement();
     }
 }
 
-class RetractProbe extends Commands {
+class retractProbe extends Commands {
 
     public char key(){
         return 'f';
@@ -76,4 +76,3 @@ class RetractProbe extends Commands {
         dron.retractProbe();
     }
 }
-

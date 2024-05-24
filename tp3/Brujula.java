@@ -17,7 +17,7 @@ class Norte extends Brujula {
     }
 
     public String heading() {
-        return "N";
+        return "North";
     }
 }
 
@@ -31,7 +31,7 @@ class Sur extends Brujula {
     }
 
     public String heading() {
-        return "S";
+        return "South";
     }
 }
 
@@ -45,7 +45,7 @@ class Este extends Brujula {
     }
 
     public String heading() {
-        return "E";
+        return "East";
     }
 }
 
@@ -59,6 +59,6 @@ class Oeste extends Brujula {
     }
 
     public String heading() {
-        return "W";
+        return "West";
     }
 }
