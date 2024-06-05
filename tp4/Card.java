@@ -10,96 +10,25 @@ public abstract class Card {
 
     public abstract void checkInsertion(Card mazoCard);
 
-    public abstract void checkR1();
-    public abstract void checkA2();
-
-    public
-}
-
-class R1 extends Card {
-    public R1() {
-        this.color = "Red";
-        this.number = "1";
-    }
-
-    public String getColor() {
-        return this.color;
-    }
-
-    public String getNumber() {
-        return this.number;
-    }
-
-    public void checkInsertion(Card mazoCard) {
-        mazoCard.checkR1();
-    }
-
-    public void checkR1() {
-        throw new RuntimeException("Can't be two R1's in game");
-    }
-
-    public void checkA2() {
-        throw new RuntimeException("Can't insert A2 after R1");
-    }
-
 
 }
 
-class A2 extends Card {
-    public A2() {
-        this.color = "Blue";
-        this.number = "2";
+class numericCard extends Card {
+    public numericCard(String color, String number) {
+        this.color = color;
+        this.number = number;
     }
-
     public String getColor() {
-        return this.color;
+        return color;
     }
 
     public String getNumber() {
-        return this.number;
-    }
-
-
-    public void checkInsertion(Card mazoCard) {
-        mazoCard.checkA2();
-    }
-
-    public void checkA2() {
-        throw new RuntimeException("Can't be two A2's in game");
-    }
-
-    public void checkR1() {
-        throw new RuntimeException("Can't insert R1 after A2");
-    }
-
-
-
-}
-
-class R2 extends Card {
-    public R2() {
-        this.color = "Red";
-        this.number = "2";
-    }
-
-    public String getColor() {
-        return this.color;
-    }
-
-    public String getNumber() {
-        return this.number;
+        return number;
     }
 
     public void checkInsertion(Card mazoCard) {
-        mazoCard.checkR2();
+        if (mazoCard.getNumber() != this.getNumber() && mazoCard.getColor() != this.getColor()) {
+            throw new RuntimeException("Can't insert mismatched card");
+        } else return;
     }
-
-    public void checkR1() {
-        return;
-    }
-
-    public void checkA2() {
-        return;
-    }
-
 }

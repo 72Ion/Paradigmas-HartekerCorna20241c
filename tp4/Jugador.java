@@ -23,7 +23,6 @@ public class Jugador {
     }
 
 
-
     public Card showCurrentCard() {
         return cartas.get(0);
     }

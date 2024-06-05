@@ -46,6 +46,7 @@ public class UnoTest {
             assertEquals("Alice", uno.getCurrentPlayer());
         }
 
+
     @Test public void cartaFinal(){
             Partida uno = new Partida();
             Jugador playerOne = new Jugador("Alice");
@@ -54,7 +55,7 @@ public class UnoTest {
             uno.addPlayer(playerTwo);
             uno.checkPlayers();
 
-            Card cartaUno = new R1();
+            Card cartaUno = new numericCard("Red", "1");
 
             uno.setUpperCard(cartaUno); // Esta hardcodeado, deberia ser una restante del mazo
             assertEquals("Red", uno.getUpperCard().getColor());
@@ -71,8 +72,8 @@ public class UnoTest {
             uno.addPlayer(playerTwo);
             uno.checkPlayers();
 
-            Card cartaUno = new R1();
-            Card cartaDos = new A2();
+            Card cartaUno = new numericCard("Red", "1");
+            Card cartaDos = new numericCard("Blue", "2");
 
             playerOne.addCard(cartaUno);
             playerTwo.addCard(cartaDos);
@@ -93,13 +94,15 @@ public class UnoTest {
         uno.addPlayer(playerTwo);
         uno.checkPlayers();
 
-        Card cartaUno = new R1();
+        Card cartaUno = new numericCard("Red", "1");
         uno.setUpperCard(cartaUno);
 
-        Card cartaDos = new R1();
+        Card cartaDos = new numericCard("Red", "1");
         playerOne.addCard(cartaDos);
 
-        assertThrowsLike("Can't be two R1's in game", () -> uno.partidaReceive(playerOne));
+        uno.partidaReceive(playerOne);
+
+        assertEquals("Red",uno.getUpperCard().getColor());
     }
 
 
@@ -111,20 +114,66 @@ public class UnoTest {
         uno.addPlayer(playerTwo);
         uno.checkPlayers();
 
-        Card cartaUno = new R1();
+        Card cartaUno = new numericCard("Red", "1");
         uno.setUpperCard(cartaUno);
 
-        Card cartaDos = new A2();
+        Card cartaDos = new numericCard("Blue", "2");
         playerOne.addCard(cartaDos);
 
-        assertThrowsLike("Can't insert A2 after R1", () -> uno.partidaReceive(playerOne));
+        assertThrowsLike("Can't insert mismatched card", () -> uno.partidaReceive(playerOne));
+
+    }
+
+    @Test public void apoyarAsimetriaNumero() {
+        Partida uno = new Partida();
+        Jugador playerOne = new Jugador("Alice");
+        Jugador playerTwo = new Jugador("Bob");
+        uno.addPlayer(playerOne);
+        uno.addPlayer(playerTwo);
+        uno.checkPlayers();
+
+        Card cartaUno = new numericCard("Red", "1");
+        uno.setUpperCard(cartaUno);
+
+        Card cartaDos = new numericCard("Red", "2");
+        playerOne.addCard(cartaDos);
+
+        uno.partidaReceive(playerOne);
+
+        assertEquals("2",uno.getUpperCard().getNumber());
+
+    }
+
+    @Test public void apoyarAsimetriaColor() {
+        Partida uno = new Partida();
+        Jugador playerOne = new Jugador("Alice");
+        Jugador playerTwo = new Jugador("Bob");
+        uno.addPlayer(playerOne);
+        uno.addPlayer(playerTwo);
+        uno.checkPlayers();
+
+        Card cartaUno = new numericCard("Red", "1");
+        uno.setUpperCard(cartaUno);
+
+        Card cartaDos = new numericCard("Blue", "1");
+        playerOne.addCard(cartaDos);
+
+        uno.partidaReceive(playerOne);
+
+        assertEquals("Blue",uno.getUpperCard().getColor());
 
     }
 
 
-    @Test public void apoyarCartaCorrectaColor(){
 
-    }
+
+
+
+
+
+
+
+
 
 
 
