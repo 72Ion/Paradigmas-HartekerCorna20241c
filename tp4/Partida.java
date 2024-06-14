@@ -1,56 +1,53 @@
-package UnoTp4;
+package uno;
+import java.util.*;
 
-import java.util.ArrayList;
-import java.util.List;
 
 public class Partida {
-    // Create a variable that's a list with players
 
-    private List<Jugador> players;
-    private Card upperCard;
+    List<List<Carta>> playerCards;
+    List<Carta> deck = new ArrayList<>();
+    Carta head;
+    int currentPlayer = 0;
+
+    State state = new EmptyState(this);
 
 
-    public Partida() {
-        this.players = new ArrayList<>();
+    public Partida(List<List<Carta>> playerCards, List<Carta> deck){
+        this.playerCards = playerCards;
+        this.deck = deck;
     }
 
-    public void addPlayer(Jugador player) {
-        this.players.add(player);
+    public State getState(){
+        return state;
     }
 
-    public void checkPlayers() {
-        if (players.size() < 2) {
-            throw new RuntimeException("At least two players are required to start the game");
+    public boolean checkMinPlayers(){
+        return playerCards.size() >= 2;
+    }
+
+
+    public void comparePlayer(int desiredPlayer) {
+        if (!(desiredPlayer == currentPlayer)) {
+            throw new RuntimeException("Wrong player turn.");
         }
     }
 
-    public void nextTurn() {
-        if (!players.isEmpty()) {
-            Jugador currentPlayer = players.remove(0);
-            players.add(currentPlayer);
-        }
+    public Carta checkCardContention(int desiredPlayer, Carta card){
+        return playerCards.get(desiredPlayer).stream()
+                .filter(playerCard -> playerCard.getColor().equals(card.getColor()) && playerCard.getValor() == card.getValor())
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Player does not have that card."));
     }
 
-    public void setUpperCard(Card card) {
-        this.upperCard = card;
-    }
-
-
-
-    public String getCurrentPlayer() {
-        if (!players.isEmpty()) {
-            Jugador playerInQuestion =  players.get(0); // return the first player as the current player
-            return playerInQuestion.getName();
-        }
-        throw new RuntimeException("No players added");
-    }
-
-    public Card getUpperCard() {
-        return upperCard;
-    }
-
-    public void partidaReceive(Jugador player) {
-        this.setUpperCard(player.removeAndReturnFirstCard(this.getUpperCard()));
+    public void removePlayerCard(int desiredPlayer, Carta card){
+        playerCards.get(desiredPlayer).remove(card);
     }
 
 }
+
+//
+//public class playCurrentPlayer(){
+//
+//
+//}
+//
