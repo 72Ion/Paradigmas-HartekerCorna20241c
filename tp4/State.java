@@ -8,8 +8,9 @@ public abstract class State {
     public abstract String getMessage();
     public abstract Partida startGame();
     public abstract Partida setHead(Carta head);
-    public abstract Partida playCurrentPlayer();
     public abstract Partida playCard(Carta card, int desiredPlayer);
+    public abstract Partida playCard(Carta card, int desiredPlayer, String possibleColor);
+    public abstract Partida drawCard(int desiredPlayer);
 
 
 
@@ -37,17 +38,23 @@ class EmptyState extends State {
     }
 
     public Partida setHead(Carta head) {
-        partida.head = head;
-        return partida;
+        throw new RuntimeException("Define Players Before"); // Falta Test!!
     }
 
-    public Partida playCurrentPlayer(){
-        throw new RuntimeException("Game has not started yet.");
-    }
 
     public Partida playCard(Carta card, int desiredPlayer) { // Falta Test!!
         throw new RuntimeException("Game has not started yet.");
     }
+
+
+    public Partida playCard(Carta card, int desiredPlayer, String possibleColor) { // Falta Test!!
+        throw new RuntimeException("Game has not started yet.");
+    }
+
+    public Partida drawCard(int desiredPlayer){ // Falta Test!!
+        throw new RuntimeException("Game has not started yet.");
+    }
+
 
 }
 
@@ -63,21 +70,24 @@ class PlayState extends State {
         return message;
     }
 
-    public Partida startGame(){return partida;}
+    public Partida startGame(){throw new RuntimeException("Game is already being played.");} // Falta test!!
 
     public Partida setHead(Carta head){
         partida.head = head;
-        return partida;
-    }
-
-    public Partida playCurrentPlayer(){
         partida.state = new CurrentPlayerPut(partida);
         return partida;
-
     }
 
     public Partida playCard(Carta card, int desiredPlayer) { // Falta Test!!
         throw new RuntimeException("Can't play card without player playing.");
+    }
+
+    public Partida playCard(Carta card, int desiredPlayer, String possibeColor) { // Falta Test!!
+        throw new RuntimeException("Can't play card without player playing.");
+    }
+
+    public Partida drawCard(int desiredPlayer){ // Falta Test!!
+        throw new RuntimeException("Can't draw card without player playing.");
     }
 
 
@@ -105,53 +115,89 @@ class CurrentPlayerPut extends State {
         throw new RuntimeException("Can't randomly set head. Let player play.");
     }
 
-    public Partida playCurrentPlayer(){
-        throw new RuntimeException("Player is already playing.");
-    }
 
     public Partida playCard(Carta card, int desiredPlayer) {
+
         partida.comparePlayer(desiredPlayer); // Compara turno
         card = partida.checkCardContention(desiredPlayer, card); // Compara si el jugador tiene la carta
+        partida = partida.checkMultipleDraw(partida, card);
+
         partida.head = partida.head.getComparison(card); // Compara si la carta se puede agregar
         partida.removePlayerCard(desiredPlayer, card);
+
+
+        partida = partida.changeTurn("");
         return partida;
     }
 
+    public Partida playCard(Carta card, int desiredPlayer, String possibleColor) {
 
+        partida.comparePlayer(desiredPlayer); // Compara turno
+
+        card = partida.checkCardContention(desiredPlayer, card); // Compara si el jugador tiene la carta
+
+        partida = partida.checkMultipleDraw(partida, card);
+
+        partida.head = partida.head.getComparison(card); // Compara si la carta se puede agregar
+
+        partida.removePlayerCard(desiredPlayer, card);
+
+        partida.checkUNOstate(desiredPlayer);
+
+        partida = partida.changeTurn(possibleColor);
+        return partida;
+    }
+
+    public Partida drawCard(int desiredPlayer){
+        partida.comparePlayer(desiredPlayer);
+        partida.state = new DrawingCard(partida);
+        partida = partida.state.drawCard(desiredPlayer);
+        return partida;
+    }
 
 }
 
+class DrawingCard extends State {
+    String message = "Player is drawing.";
 
-//
-//    public Partida playCurrentPlayer(){
-//        partida.state = new StartPlayerOps(partida);
-//        return partida;
-//
-//    }
-//
-//    public Partida playCard(Carta card){
-//        if (partida.playerCards.get(0).contains(card)){
-//            partida.playerCards.get(0).remove(card);
-//            partida.state = new PlayState(partida);
-//            return partida;
-//        } else {
-//            throw new RuntimeException("Invalid card");
-//        }
-//    }
-//
-//    public Partida drawCard(){
-//        partida.playerCards.get(0).add(partida.deck.get(0));
-//        partida.deck.remove(0);
-//        partida.state = new PlayState(partida);
-//        return partida;
-//    }
-//
-//    public Partida endTurn(){
-//        List<Carta> temp = partida.playerCards.get(0);
-//        partida.playerCards.remove(0);
-//        partida.playerCards.add(temp);
-//        partida.state = new PlayState(partida);
-//        return partida;
+    Partida partida;
+
+    public DrawingCard(Partida partida) {
+        this.partida = partida;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public Partida startGame() {
+        throw new RuntimeException("Game is already being played.");
+    }
+
+    public Partida setHead(Carta head) {
+        throw new RuntimeException("Can't randomly set head. Let player play.");
+    }
+
+    public Partida playCard(Carta card, int desiredPlayer) {
+        throw new RuntimeException("Player is drawing.");
+    }
+
+    public Partida playCard(Carta card, int desiredPlayer, String possibleColor) {
+        throw new RuntimeException("Player is drawing.");
+    }
+
+    public Partida drawCard(int desiredPlayer){
+        partida.playerCards.get(desiredPlayer).add(partida.deck.get(0));
+        partida.removeDeckCard();
+        partida.state = new CurrentPlayerPut(partida);
+        return partida;
+    }
+
+    public Partida changeTurn(String possibleColor) { // Falta test!!
+        throw new RuntimeException("Player is drawing.");
+    }
+
+}
 
 
 

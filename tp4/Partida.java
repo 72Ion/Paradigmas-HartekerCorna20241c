@@ -5,9 +5,13 @@ import java.util.*;
 public class Partida {
 
     List<List<Carta>> playerCards;
+
     List<Carta> deck = new ArrayList<>();
+
     Carta head;
+
     int currentPlayer = 0;
+    int plus2Counter = 0;
 
     State state = new EmptyState(this);
 
@@ -19,6 +23,10 @@ public class Partida {
 
     public State getState(){
         return state;
+    }
+
+    public int getCurrentPlayer(){
+        return currentPlayer;
     }
 
     public boolean checkMinPlayers(){
@@ -43,6 +51,24 @@ public class Partida {
         playerCards.get(desiredPlayer).remove(card);
     }
 
+    public void removeDeckCard(){
+        deck.remove(0);
+    }
+
+    public Partida changeTurn(String possibleColor) {
+        head.executeAction(this, possibleColor);
+        return this;
+    }
+
+    public Partida checkMultipleDraw(Partida partida, Carta card) {
+        return card.comparePlus2(partida);
+    }
+
+    public void checkUNOstate(int desiredPlayer) {
+        if (playerCards.get(desiredPlayer).size() == 1) {
+            playerCards.get(desiredPlayer).get(0).unoState = true;
+        }
+    }
 }
 
 //
