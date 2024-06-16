@@ -9,7 +9,9 @@ public abstract class Carta {
 
     public abstract int getValor();
     public abstract String getColor();
-    public abstract Carta getComparison(Carta incoming);
+//    public abstract Carta getComparison(Carta incoming);
+
+
 
     /*
     public boolean canHandle(Carta incoming) {
@@ -24,10 +26,31 @@ public abstract class Carta {
 }
     */
 
-    public abstract Partida executeAction(Partida partida, String possibleColor);
+//    public abstract Partida executeAction(Partida partida, String possibleColor);
 
-    public abstract Partida comparePlus2(Partida partida);
+//    public abstract Partida comparePlus2(Partida partida);
 }
+
+
+
+class CartaNumerica extends Carta {
+    public CartaNumerica(int valor, String color) {
+        this.valor = valor;
+        this.color = color;
+        this.unoState = false;
+    }
+
+    public int getValor() {
+        return valor;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+}
+
+
 
 //class CartaNumerica extends Carta {
 //    public CartaNumerica(int valor, String color) {
