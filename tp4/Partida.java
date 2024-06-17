@@ -69,22 +69,6 @@ public class Partida {
     }
 
     public void checkTurn(String desiredPlayer) {
-//        SimpleEntry<String, List<Carta>> currentEntry;
-//        try {
-//            currentEntry = currentPlayer.next();
-//        } catch (NoSuchElementException e) {
-//            // Reset the iterator to the beginning of the playerCards list
-//            currentPlayer = playerCards.listIterator();
-//            currentEntry = currentPlayer.next();
-//        }
-//
-//        currentPlayer.previous(); // Move the iterator back to the original position
-//
-//        String currentPlayerName = currentEntry.getKey();
-//
-//        Optional.of(currentPlayerName)
-//                .filter(name -> name.equals(desiredPlayer))
-//                .orElseThrow(() -> new RuntimeException("Wrong player turn."));
         this.state.checkTurn(desiredPlayer);
     }
 
@@ -156,7 +140,6 @@ public class Partida {
 
     private Carta pretendPop(List<Carta> playerHand, Carta cardToRemove) {
         playerHand.remove(cardToRemove);
-
         return cardToRemove;
     }
 
@@ -165,7 +148,10 @@ public class Partida {
         this.state.nextTurn();
     }
 
-    public void drawCard(String desiredPlayer) {
+
+
+    public Partida drawCard(String desiredPlayer) {
+        this.checkEnd();
         this.checkTurn(desiredPlayer);
         List<Carta> playerHand = playerCards.stream()
                 .filter(entry -> entry.getKey().equals(desiredPlayer))
@@ -173,16 +159,68 @@ public class Partida {
                 .map(SimpleEntry::getValue)
                 .orElseThrow(() -> new RuntimeException("Player not found."));
 
+        playerHand.get(playerHand.size()-1).unoState = false;
         playerHand.add(deck.get(0));
-
         deck.remove(0);
+        return this;
     }
 
-//    public void setUnoState(String desiredPlayer) {
-//        playerCards.stream()
-//                .filter(entry -> entry.getKey().equals(desiredPlayer) && entry.getValue().size() == 1)
-//                .forEach(entry -> entry.getValue().get(0).unoState = true);
-//    }
 
+    public void drawCardUNOCase(String desiredPlayer) {
+        List<Carta> playerHand = playerCards.stream()
+                .filter(entry -> entry.getKey().equals(desiredPlayer))
+                .findFirst()
+                .map(SimpleEntry::getValue)
+                .orElseThrow(() -> new RuntimeException("Player not found."));
 
+        playerHand.get(playerHand.size()-1).unoState = false;
+        playerHand.add(deck.get(0));
+        deck.remove(0);
+    }
+    public void setUnoState(String desiredPlayer) {
+        playerCards.stream()
+                .filter(entry -> entry.getKey().equals(desiredPlayer) && entry.getValue().size() == 1)
+                .forEach(entry -> entry.getValue().get(0).unoState = true);
+    }
+
+    public Partida personalUNO(String desiredPlayer) {
+        this.checkEnd();
+        playerCards.stream()
+                .filter(entry -> entry.getKey().equals(desiredPlayer))
+                .findFirst()
+                .ifPresent(entry -> entry.getValue().get(0).unoState = false);
+        return this;
+    }
+
+    public Partida shoutUNOTo(String targetPlayer) {
+        this.checkEnd();
+        // Find the target player in the playerCards list
+        List<Carta> targetPlayerHand = playerCards.stream()
+                .filter(entry -> entry.getKey().equals(targetPlayer))
+                .findFirst()
+                .map(AbstractMap.SimpleEntry::getValue)
+                .orElseThrow(() -> new RuntimeException("Player not found."));
+
+        // Check if the unoState of the first card is true
+        if (!targetPlayerHand.isEmpty() && targetPlayerHand.get(0).unoState) {
+            // If it is, make the player draw two cards
+            drawCardUNOCase(targetPlayer);
+            drawCardUNOCase(targetPlayer);
+        }
+        return this;
+    }
+
+    public Partida checkEnd() {
+        // Use Stream API to check if any player has an empty hand
+        playerCards.stream()
+                .filter(entry -> entry.getValue().isEmpty())
+                .findFirst()
+                .map(entry -> {
+                    this.state = new finishedGame(this);
+                    return this;
+                })
+                .orElse(this);
+
+        return this;
+    }
 }

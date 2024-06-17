@@ -123,7 +123,8 @@ class PuttingForward extends State {
 
     public Partida playCard(Carta card, String desiredPlayer) {
         partida = partida.beginPut(card, desiredPlayer);
-//        partida.setUnoState(desiredPlayer);
+        partida.setUnoState(desiredPlayer);
+        partida.checkEnd();
         return partida;
     }
 
@@ -169,7 +170,8 @@ class PuttingReverse extends State {
 
     public Partida playCard(Carta card, String desiredPlayer) {
         partida = partida.beginPut(card, desiredPlayer);
-//        partida.setUnoState(desiredPlayer);
+        partida.setUnoState(desiredPlayer);
+        partida.checkEnd();
         return partida;
     }
 
@@ -189,6 +191,43 @@ class PuttingReverse extends State {
         return new PuttingForward(partida);
     }
 
+}
+
+class finishedGame extends State {
+    String message = "Game is over.";
+
+    Partida partida;
+    public finishedGame(Partida partida) {
+        this.partida = partida;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public State startGame(){
+        throw new RuntimeException("Game is over.");
+    }
+
+    public State setHead(Carta head) {
+        throw new RuntimeException("Game is over.");
+    }
+
+    public Partida playCard(Carta card, String desiredPlayer) {
+        throw new RuntimeException("Game is over.");
+    }
+
+    public void nextTurn() {
+        throw new RuntimeException("Game is over.");
+    }
+
+    public void checkTurn(String desiredPlayer) {
+        throw new RuntimeException("Game is over.");
+    }
+
+    public State swapper() {
+        throw new RuntimeException("Game is over.");
+    }
 
 }
 

@@ -300,26 +300,135 @@ public class unoTest {
         assertEquals(partida.head.getValor(), 3);
 
     }
-//
-//    @Test void getUNOState() {
-//        Partida partida = new Partida(listUnoCase, emptyDeck);
-//
-//        Carta head = new CartaNumerica(1, "Green");
-//        partida.startGame().setHead(head);
-//
-//        Carta cardToPlay = new CartaNumerica(1, "Red"); // Assuming player A has this card
-//        partida.playCard(cardToPlay, "A");
-//
-//        assertEquals(partida.playerCards.get(0).unoState, true);
-//
-//
-//
-//    }
+
+    @Test void getUNOState() {
+        Partida partida = new Partida(listUnoCase, emptyDeck);
+
+        Carta head = new CartaNumerica(1, "Green");
+        partida.startGame().setHead(head);
+
+        Carta cardToPlay = new CartaNumerica(1, "Red"); // Assuming player A has this card
+        partida.playCard(cardToPlay, "A");
+
+        List<Carta> playerHandA = partida.playerCards.stream()
+                .filter(entry -> entry.getKey().equals("A"))
+                .findFirst()
+                .map(SimpleEntry::getValue)
+                .orElseThrow(() -> new RuntimeException("Player not found."));
+
+        partida.playCard(new CartaNumerica(3, "Red"), "B");
+
+        List<Carta> playerHandB = partida.playerCards.stream()
+                .filter(entry -> entry.getKey().equals("B"))
+                .findFirst()
+                .map(SimpleEntry::getValue)
+                .orElseThrow(() -> new RuntimeException("Player not found."));
 
 
+        assertTrue(playerHandA.get(0).unoState);
+        assertTrue(playerHandB.get(0).unoState);
 
 
+    }
 
+    @Test void returnUNOIfDraw() {
+        Partida partida = new Partida(listUnoCase, deck1); // Podria hacer un test de deck...
+
+        Carta head = new CartaNumerica(1, "Green");
+        partida.startGame().setHead(head);
+
+        Carta cardToPlay = new CartaNumerica(1, "Red"); // Assuming player A has this card
+        partida.playCard(cardToPlay, "A");
+
+        partida.playCard(new CartaNumerica(3, "Red"), "B");
+
+        partida.drawCard("A");
+
+        List<Carta> playerHandA = partida.playerCards.stream()
+                .filter(entry -> entry.getKey().equals("A"))
+                .findFirst()
+                .map(SimpleEntry::getValue)
+                .orElseThrow(() -> new RuntimeException("Player not found."));
+
+        assertFalse(playerHandA.get(0).unoState);
+
+    }
+
+    @Test void shoutUNOToMe() {
+        Partida partida = new Partida(listUnoCase, deck1); // Podria hacer un test de deck...
+
+        Carta head = new CartaNumerica(1, "Green");
+        partida.startGame().setHead(head);
+
+        Carta cardToPlay = new CartaNumerica(1, "Red"); // Assuming player A has this card
+        partida.playCard(cardToPlay, "A");
+
+        partida.personalUNO("A");
+
+        List<Carta> playerHandA = partida.playerCards.stream()
+                .filter(entry -> entry.getKey().equals("A"))
+                .findFirst()
+                .map(SimpleEntry::getValue)
+                .orElseThrow(() -> new RuntimeException("Player not found."));
+
+        assertFalse(playerHandA.get(0).unoState);
+    }
+
+    @Test void shoutUNOToOthers() {
+        Partida partida = new Partida(listUnoCase, deck1); // Podria hacer un test de deck...
+
+        Carta head = new CartaNumerica(1, "Green");
+        partida.startGame().setHead(head);
+
+        Carta cardToPlay = new CartaNumerica(1, "Red"); // Assuming player A has this card
+        partida.playCard(cardToPlay, "A");
+
+        partida.shoutUNOTo("A");
+
+        int actualCardCount = partida.playerCards.stream()
+                .filter(entry -> entry.getKey().equals("A"))
+                .findFirst()
+                .map(entry -> entry.getValue().size())
+                .orElse(0);
+
+        assertEquals(3, actualCardCount);
+
+    }
+
+    @Test void multipleUNOOperations() {
+        Partida partida = new Partida(listUnoCase, deck1); // Podria hacer un test de deck...
+
+        Carta head = new CartaNumerica(1, "Green");
+        partida.startGame().setHead(head);
+
+        Carta cardToPlay = new CartaNumerica(1, "Red"); // Assuming player A has this card
+        partida.playCard(cardToPlay, "A");
+
+        partida.personalUNO("A").shoutUNOTo("B").shoutUNOTo("A");
+
+        partida.playCard(new CartaNumerica(3, "Red"), "B");
+        partida.shoutUNOTo("B");
+
+        int actualCardCount = partida.playerCards.stream()
+                .filter(entry -> entry.getKey().equals("B"))
+                .findFirst()
+                .map(entry -> entry.getValue().size())
+                .orElse(0);
+
+        assertEquals(3, actualCardCount);
+    }
+
+    @Test void finishGame() {
+        Partida partida = new Partida(listUnoCase, deck1); // Podria hacer un test de deck...
+
+        Carta head = new CartaNumerica(1, "Green");
+        partida.startGame().setHead(head);
+
+        Carta cardToPlay = new CartaNumerica(1, "Red"); // Assuming player A has this card
+        partida.playCard(cardToPlay, "A").playCard(new CartaNumerica(3, "Red"), "B");
+
+        assertThrowsLike(()->partida.playCard(new CartaNumerica(3,"Blue"), "A").drawCard("B"), "Game is over.");
+    }
 
 
 
