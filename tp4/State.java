@@ -230,4 +230,3 @@ class finishedGame extends State {
     }
 
 }
-
